@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: #eee;
+            display: flex;
+            font-family: sans-serif;
+        }
+
+        .container {
+            margin: auto;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .container form {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .container form h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #222;
+        }
+
+        .container form .form-control {
+            width: 100%;
+            height: 40px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid silver;
+            margin: 10px 0 18px 0;
+            padding: 0 10px;
+        }
+
+        .container form .btn {
+            margin-left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 34px;
+            border: none;
+            outline: none;
+            background: #27a327;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: white;
+            border-radius: 4px;
+            transition: .3s;
+        }
+
+        .container form .btn:hover {
+            opacity: .7;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <!-- Login Form -->
+        <form id="loginForm">
+            <h1>Login</h1>
+            <div class="form-group">
+                <label for="loginEmail">Email ID</label>
+                <input type="text" id="loginEmail" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" class="form-control" required>
+            </div>
+            <input type="submit" class="btn" value="Login">
+            <p class="toggle-link" onclick="showRegister()">Don't have an account? Register</p>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="registerForm" style="display: none;">
+            <h1>Register</h1>
+            <div class="form-group">
+                <label for="registerEmail">Email ID</label>
+                <input type="text" id="registerEmail" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" class="form-control" required>
+            </div>
+            <input type="submit" class="btn" value="Register">
+            <p class="toggle-link" onclick="showLogin()">Already have an account? Login</p>
+        </form>
+    </div>
+
+    <script>
+        // Show Registration Form
+        function showRegister() {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("registerForm").style.display = "block";
+        }
+
+        // Show Login Form
+        function showLogin() {
+            document.getElementById("registerForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+        }
+
+        // Registration Process (Multiple Users)
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent page reload
+
+            let email = document.getElementById("registerEmail").value;
+            let password = document.getElementById("registerPassword").value;
+
+            // Retrieve users from localStorage (or create an empty array if none exist)
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Check if the email already exists
+            let userExists = users.some(user => user.email === email);
+            if (userExists) {
+                alert("Email is already registered! Please use another email.");
+                return;
+            }
+
+            // Add new user to the array
+            users.push({ email, password });
+
+            // Save updated users array to localStorage
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("Registration successful! You can now log in.");
+            showLogin(); // Switch to login form
+        });
+
+        // Login Process (Multiple Users)
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent page reload
+
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+
+            // Retrieve users from localStorage
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Check if credentials match any user in the array
+            let validUser = users.find(user => user.email === email && user.password === password);
+
+            if (validUser) {
+                alert("Login successful!");
+                window.location.href = "Sample.html"; // Redirect after login
+            } else {
+                alert("Invalid email or password. Please try again.");
+            }
+        });
+    </script>
+
+</body>
+</html>
